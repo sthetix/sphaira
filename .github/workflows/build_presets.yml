@@ -7,6 +7,7 @@ on:
   pull_request:
     branches-ignore:
       - dev
+  workflow_dispatch:
 
 jobs:
   build:
@@ -24,15 +25,14 @@ jobs:
     # fetch latest cmake
     - uses: lukka/get-cmake@v3.31.6
 
-    - name: Configure CMake
-      run: cmake --preset ${{ matrix.preset }}
-
-    - name: Build
-      run: cmake --build --preset ${{ matrix.preset }} --parallel $(nproc)
+    - name: Build release package
+      run: ./build_release.sh
 
     - name: Deploy
       if: ${{ github.event_name != 'pull_request' && github.event.action != 'unassigned' }}
       uses: actions/upload-artifact@master
       with:
         name: sphaira-${{ matrix.preset }}
-        path: build/${{ matrix.preset }}/sphaira.nro
+        path: |
+          build/${{ matrix.preset }}/sphaira.nro
+          out/sphaira.zip

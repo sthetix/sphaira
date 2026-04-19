@@ -10,7 +10,8 @@
             "name": "core",
             "displayName": "core",
             "hidden": true,
-            "binaryDir": "${sourceDir}/build/${presetName}"
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "generator": "Ninja"
         },
         {
             "name": "Release",

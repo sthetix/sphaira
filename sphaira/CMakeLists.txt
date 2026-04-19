@@ -307,6 +307,9 @@ if (ENABLE_LIBUSBDVD)
     FetchContent_Declare(libusbdvd
         GIT_REPOSITORY https://github.com/proconsule/libusbdvd.git
         GIT_TAG 3cb0613
+        PATCH_COMMAND ${CMAKE_COMMAND}
+            -DFILE=<SOURCE_DIR>/source/os/switch/switch_usb.cpp
+            -P ${CMAKE_SOURCE_DIR}/cmake/patch_libusbdvd.cmake
     )
 
     FetchContent_MakeAvailable(libusbdvd)

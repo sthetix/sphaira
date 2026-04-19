@@ -1,5 +1,15 @@
 #!/bin/sh
 
+set -eu
+
+if [ -z "${DEVKITPRO:-}" ] && [ -d /opt/devkitpro ]; then
+    export DEVKITPRO=/opt/devkitpro
+fi
+
+if [ -z "${DEVKITARM:-}" ] && [ -n "${DEVKITPRO:-}" ] && [ -d "${DEVKITPRO}/devkitARM" ]; then
+    export DEVKITARM="${DEVKITPRO}/devkitARM"
+fi
+
 # builds a preset
 build_preset() {
     echo Configuring $1 ...

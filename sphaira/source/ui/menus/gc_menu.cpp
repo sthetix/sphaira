@@ -96,17 +96,6 @@ auto GetXciSizeFromRomSize(u8 rom_size) -> s64 {
     return 0;
 }
 
-struct DebugEventInfo {
-    u32 event_type;
-    u32 flags;
-    u64 thread_id;
-    u64 title_id;
-    u64 process_id;
-    char process_name[12];
-    u32 mmu_flags;
-    u8 _0x30[0x10];
-};
-
 auto GetDumpTypeStr(u8 type) -> const char* {
     switch (type) {
         case DumpFileType_TrimmedXCI:
@@ -1252,7 +1241,7 @@ Result Menu::GcGetSecurityInfo(GameCardSecurityInformation& out) {
 
     constexpr u64 title_id = 0x0100000000000000; // FS
     Handle handle{};
-    DebugEventInfo event_info{};
+    ::DebugEventInfo event_info{};
     u64 pids[0x50]{};
     s32 process_count{};
 
@@ -1261,7 +1250,9 @@ Result Menu::GcGetSecurityInfo(GameCardSecurityInformation& out) {
         if (R_SUCCEEDED(svcDebugActiveProcess(&handle, pids[i]))) {
             ON_SCOPE_EXIT(svcCloseHandle(handle));
 
-            if (R_FAILED(svcGetDebugEvent(&event_info, handle)) || title_id != event_info.title_id) {
+            if (R_FAILED(svcGetDebugEvent(&event_info, handle))
+                || event_info.type != DebugEventType_CreateProcess
+                || title_id != event_info.info.create_process.program_id) {
                 continue;
             }
 

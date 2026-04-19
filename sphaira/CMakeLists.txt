@@ -35,6 +35,15 @@ project(sphaira
     LANGUAGES C CXX
 )
 
+include(CheckCXXSourceCompiles)
+check_cxx_source_compiles("
+    #include <switch.h>
+    int main() {
+        DebugEventInfo event_info{};
+        return (int)DebugEventType_CreateProcess + (int)event_info.type;
+    }
+" LIBNX_HAS_DEBUG_EVENT_INFO)
+
 find_package(Git REQUIRED)
 
 execute_process(
@@ -167,6 +176,7 @@ target_compile_definitions(sphaira PRIVATE
     -DCURL_NO_OLDIES=1
     -DDEV_BUILD=$<BOOL:${DEV_BUILD}>
     -DZSTD_STATIC_LINKING_ONLY=1
+    -DLIBNX_HAS_DEBUG_EVENT_INFO=$<BOOL:${LIBNX_HAS_DEBUG_EVENT_INFO}>
 )
 
 target_compile_options(sphaira PRIVATE

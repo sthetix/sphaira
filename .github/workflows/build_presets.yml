@@ -26,7 +26,7 @@ jobs:
     - uses: lukka/get-cmake@v3.31.6
 
     - name: Build release package
-      run: ./build_release.sh
+      run: sh ./build_release.sh
 
     - name: Deploy
       if: ${{ github.event_name != 'pull_request' && github.event.action != 'unassigned' }}

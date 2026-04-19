@@ -1272,7 +1272,7 @@ Result Menu::GcGetSecurityInfo(GameCardSecurityInformation& out) {
                 || event_info.type != DebugEventType_CreateProcess
                 || title_id != event_info.info.create_process.program_id) {
 #else
-            if (R_FAILED(svcGetDebugEvent(reinterpret_cast<DebugEventInfo*>(&event_info), handle))
+            if (R_FAILED(svcGetDebugEvent(&event_info, handle))
                 || title_id != event_info.title_id) {
 #endif
                 continue;

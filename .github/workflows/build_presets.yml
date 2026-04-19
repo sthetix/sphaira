@@ -19,10 +19,12 @@ jobs:
             preset: Release
             image: devkitpro/devkita64:latest
             artifact_suffix: latest
+            configure_args: ""
           - os: ubuntu-latest
             preset: Release
             image: devkitpro/devkita64:20251231
             artifact_suffix: 20251231
+            configure_args: "-DENABLE_LIBUSBDVD=OFF -DENABLE_LIBUSBHSFS=OFF -DENABLE_FTPSRV=OFF -DENABLE_LIBHAZE=OFF"
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.image }}
 
@@ -35,8 +37,11 @@ jobs:
     - name: Mark workspace as safe for git
       run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+    - name: Configure CMake
+      run: cmake --preset ${{ matrix.preset }} ${{ matrix.configure_args }}
+
     - name: Build release package
-      run: sh ./build_release.sh
+      run: cmake --build --preset ${{ matrix.preset }} --parallel $(nproc)
 
     - name: Deploy
       if: ${{ github.event_name != 'pull_request' && github.event.action != 'unassigned' }}
@@ -45,4 +50,3 @@ jobs:
         name: sphaira-${{ matrix.preset }}-${{ matrix.artifact_suffix }}
         path: |
           build/${{ matrix.preset }}/sphaira.nro
-          out/sphaira.zip
